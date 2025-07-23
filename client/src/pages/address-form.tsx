@@ -47,6 +47,13 @@ export default function AddressForm() {
   // Debounced search for address suggestions
   const { data: suggestions, isLoading: isSuggestionsLoading } = useQuery({
     queryKey: ["/api/places/suggestions", searchQuery],
+    queryFn: async (): Promise<SuggestionsResponse> => {
+      const res = await apiRequest(
+        "GET",
+        `/api/places/suggestions?input=${encodeURIComponent(searchQuery)}`,
+      );
+      return res.json();
+    },
     enabled: searchQuery.length >= 3,
     staleTime: 30000, // Cache for 30 seconds
   });
